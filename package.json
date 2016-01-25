@@ -1,18 +1,14 @@
 {
-  "name": "csslint",
+  "name": "csslint-qmui",
   "version": "0.10.0",
-  "description": "CSSLint",
-  "author": "Nicole Sullivan",
-  "contributors": [
-    "Nicholas C. Zakas"
-  ],
-  "homepage": "http://csslint.net/",
+  "description": "CSSLint for QMUI",
+  "author": "Kayo Lee <330956999@qq.com>",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/CSSLint/csslint.git"
+    "url": "git+https://github.com/kayo5994/csslint.git"
   },
   "bugs": {
-    "url": "https://github.com/CSSLint/csslint/issues"
+    "url": "https://github.com/kayo5994/csslint/issues"
   },
   "license": "MIT",
   "main": "./dist/csslint-node.js",
