@@ -2413,6 +2413,54 @@ background: -o-linear-gradient(top, #1e5799 ,#2989d8 ,#207cca ,#7db9e8 );
 
 })();
 
+(function(){
+    "use strict";
+    var Assert = YUITest.Assert,
+        IMPORT_STATEMENT = "@import url('foo.css');",
+        MAX_IMPORT_LIMIT = 31,
+        withinLimitCss = "",
+        exceedLimitCss = "",
+        greatlyExceedLimitCss = "",
+        i;
+
+    // Build CSS strings to be used in tests
+    withinLimitCss = IMPORT_STATEMENT;
+
+    for (i = 0; i < MAX_IMPORT_LIMIT + 1; i++) {
+        exceedLimitCss += IMPORT_STATEMENT;
+    }
+
+    for (i = 0; i < MAX_IMPORT_LIMIT + 100; i++) {
+        greatlyExceedLimitCss += IMPORT_STATEMENT;
+    }
+
+    YUITest.TestRunner.add(new YUITest.TestCase({
+
+        name: "Import IE Limit Rule Error",
+        
+        "Using @import <= 31 times should not result in error": function(){
+
+            var result = CSSLint.verify(withinLimitCss, { "import-ie-limit": 1 });
+            Assert.areEqual(0, result.messages.length);
+        },
+
+        "Using @import > 31 times should result in error": function(){
+            var result = CSSLint.verify(exceedLimitCss, { "import-ie-limit": 1 });
+            Assert.areEqual(1, result.messages.length);
+            Assert.areEqual("error", result.messages[0].type);
+            Assert.areEqual("Too many @import rules (32). IE6-9 supports up to 31 import per stylesheet.", result.messages[0].message);
+        },
+
+        "Using @import > 31 times repeatedly should result in a single error": function(){
+            var result = CSSLint.verify(greatlyExceedLimitCss, { "import-ie-limit": 1 });
+            Assert.areEqual(1, result.messages.length);
+            Assert.areEqual("error", result.messages[0].type);
+            Assert.areEqual("Too many @import rules (131). IE6-9 supports up to 31 import per stylesheet.", result.messages[0].message);
+        }
+    }));
+
+})();
+
 (function() {
     "use strict";
     var Assert = YUITest.Assert;
@@ -2623,6 +2671,32 @@ background: -o-linear-gradient(top, #1e5799 ,#2989d8 ,#207cca ,#7db9e8 );
         "Using a class with an element and without should not result in a warning": function() {
             var result = CSSLint.verify("li.foo { float: left;} .foo { float: right; }", { "overqualified-elements": 1 });
             Assert.areEqual(0, result.messages.length);
+        }
+
+    }));
+
+})();
+
+(function() {
+    "use strict";
+    var Assert = YUITest.Assert;
+
+    YUITest.TestRunner.add(new YUITest.TestCase({
+
+        name: "Naming format Errors",
+
+        "class name has line-through should result in a warning": function() {
+            var result = CSSLint.verify(".line-through-class {float: left; }", { "qmui-class-formats": 1 });
+            Assert.areEqual(1, result.messages.length);
+            Assert.areEqual("warning", result.messages[0].type);
+            Assert.areEqual("Naming format does not follow the norm QMUI(Just a-z, A-Z, 1-9 and _).", result.messages[0].message);
+        },
+
+        "class name has number zero should result in a warning": function() {
+            var result = CSSLint.verify(".zero_class0 {float: left; }", { "qmui-class-formats": 1 });
+            Assert.areEqual(1, result.messages.length);
+            Assert.areEqual("warning", result.messages[0].type);
+            Assert.areEqual("Naming format does not follow the norm QMUI(Just a-z, A-Z, 1-9 and _).", result.messages[0].message);
         }
 
     }));
