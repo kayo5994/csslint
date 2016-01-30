@@ -1,5 +1,5 @@
 /*
- * Rule: test naming conventions of QMUI: no underscores in classnames
+ * Rule: test naming follow the norm QMUI: just a-z, A-Z, 1-9 and _
  */
 
 CSSLint.addRule({
