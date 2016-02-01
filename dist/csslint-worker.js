@@ -8597,9 +8597,44 @@ CSSLint.addRule({
   init: function(parser, reporter) {
     "use strict";
     var rule = this,
-        rootClassList = ["origin"];
+        rootClassList = [];
 
     parser.addListener("startrule", function(event){
+      var selectors = event.selectors,
+      selector,
+      part,
+      modifier,
+      composition,
+      i, j, k;
+
+      for (i=0; i < selectors.length; i++){
+        selector = selectors[i];
+
+        for (j=0; j < selector.parts.length; j++){
+          part = selector.parts[j];
+          if (part.type === parser.SELECTOR_PART_TYPE){
+            for (k=0; k < part.modifiers.length; k++){
+              modifier = part.modifiers[k];
+              if (modifier.type === "class"){
+
+                composition = modifier.toString().split("_");
+
+                if (composition.length === 2) {
+                  // 如果为 root class-name，则存储到数组中，以便后面作对比
+                  rootClassList.push(modifier);
+                }
+              }
+            }
+
+          }
+
+        }
+
+      }
+
+    });
+
+    parser.addListener("endrule", function(event){
       var selectors = event.selectors,
       selector,
       part,
@@ -8626,9 +8661,6 @@ CSSLint.addRule({
                   if (!rule.isElementInArray(rootClassList, rootClass)) {
                     reporter.report("Class-name " + modifier + " shouldn't exist unless you've already set a class-name " + rootClass + ".", modifier.line, modifier.col, rule);
                   }
-                } else if (composition.length === 2) {
-                  // 如果为 root class-name，则存储到数组中，以便后面作对比
-                  rootClassList.push(modifier);
                 }
               }
             }
