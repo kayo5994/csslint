@@ -73,7 +73,7 @@ module.exports = {
                 "dir"
             ],
             "expecting": [
-                "csslint: No errors in dir/a.css.",
+                "csslint: There is 1 problem in dir/a.css.",
                 "csslint: No errors in dir/b.css.",
                 0
             ]
@@ -83,7 +83,7 @@ module.exports = {
                 "dir"
             ],
             "expecting": [
-                "csslint: There is 1 problem in dir/a.css.",
+                "csslint: There are 2 problems in dir/a.css.",
                 "csslint: There is 1 problem in dir/b.css.",
                 0
             ]
@@ -95,7 +95,7 @@ module.exports = {
                 "dir"
             ],
             "expecting": [
-                "csslint: No errors in dir/a.css.",
+                "csslint: There is 1 problem in dir/a.css.",
                 "csslint: There is 1 problem in dir/b.css.",
                 0
             ]
@@ -107,7 +107,7 @@ module.exports = {
                 "dir"
             ],
             "expecting": [
-                "csslint: There is 1 problem in dir/a.css.",
+                "csslint: There are 2 problems in dir/a.css.",
                 "csslint: No errors in dir/b.css.",
                 1
             ]
@@ -2685,18 +2685,30 @@ background: -o-linear-gradient(top, #1e5799 ,#2989d8 ,#207cca ,#7db9e8 );
 
         name: "Naming format Errors",
 
-        "class name has line-through should result in a warning": function() {
+        "A class-name follow the norm QMUI should not result in a warning": function() {
+            var result = CSSLint.verify(".test_stage {float: left; }", { "qmui-class-formats": 1 });
+            Assert.areEqual(0, result.messages.length);
+        },
+
+        "A class-name has line-through should result in a warning": function() {
             var result = CSSLint.verify(".line-through-class {float: left; }", { "qmui-class-formats": 1 });
             Assert.areEqual(1, result.messages.length);
             Assert.areEqual("warning", result.messages[0].type);
             Assert.areEqual("Naming format does not follow the norm QMUI(Just a-z, A-Z, 1-9 and _).", result.messages[0].message);
         },
 
-        "class name has number zero should result in a warning": function() {
+        "A class-name has number zero should result in a warning": function() {
             var result = CSSLint.verify(".zero_class0 {float: left; }", { "qmui-class-formats": 1 });
             Assert.areEqual(1, result.messages.length);
             Assert.areEqual("warning", result.messages[0].type);
             Assert.areEqual("Naming format does not follow the norm QMUI(Just a-z, A-Z, 1-9 and _).", result.messages[0].message);
+        },
+
+        "A class-name only consists of one-word should result in a warning": function() {
+            var result = CSSLint.verify(".test123 {float: left; }", { "qmui-class-formats": 1 });
+            Assert.areEqual(1, result.messages.length);
+            Assert.areEqual("warning", result.messages[0].type);
+            Assert.areEqual("Class-name should consists of two parts at least.", result.messages[0].message);
         }
 
     }));

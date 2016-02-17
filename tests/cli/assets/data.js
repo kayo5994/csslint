@@ -8,7 +8,7 @@ module.exports = {
                 "dir"
             ],
             "expecting": [
-                "csslint: No errors in dir/a.css.",
+                "csslint: There is 1 problem in dir/a.css.",
                 "csslint: No errors in dir/b.css.",
                 0
             ]
@@ -18,7 +18,7 @@ module.exports = {
                 "dir"
             ],
             "expecting": [
-                "csslint: There is 1 problem in dir/a.css.",
+                "csslint: There are 2 problems in dir/a.css.",
                 "csslint: There is 1 problem in dir/b.css.",
                 0
             ]
@@ -30,7 +30,7 @@ module.exports = {
                 "dir"
             ],
             "expecting": [
-                "csslint: No errors in dir/a.css.",
+                "csslint: There is 1 problem in dir/a.css.",
                 "csslint: There is 1 problem in dir/b.css.",
                 0
             ]
@@ -42,7 +42,7 @@ module.exports = {
                 "dir"
             ],
             "expecting": [
-                "csslint: There is 1 problem in dir/a.css.",
+                "csslint: There are 2 problems in dir/a.css.",
                 "csslint: No errors in dir/b.css.",
                 1
             ]

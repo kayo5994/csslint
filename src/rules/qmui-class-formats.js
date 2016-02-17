@@ -1,5 +1,5 @@
 /*
- * Rule: test naming follow the norm QMUI: just a-z, A-Z, 1-9 and _
+ * Rule: test naming follow the norm QMUI: just consists of a-z, A-Z, 1-9, and contain a underline(_) at least
  */
 
 CSSLint.addRule({
@@ -36,6 +36,8 @@ CSSLint.addRule({
 
                 if (/[^\.A-Za-z1-9_]/.test(modifier)){
                   reporter.report("Naming format does not follow the norm QMUI(Just a-z, A-Z, 1-9 and _).", modifier.line, modifier.col, rule);
+                } else if (modifier.toString().indexOf("_") === -1) {
+                  reporter.report("Class-name should consists of two parts at least.", modifier.line, modifier.col, rule);
                 }
               }
             }
