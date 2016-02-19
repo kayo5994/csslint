@@ -4,3 +4,6 @@ csslint.pnproj
 
 # Diff files
 *.orig
+
+# Custom files
+.DS_Store
