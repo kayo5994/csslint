@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /*!
-CSSLint v0.10.1
+CSSLint v0.10.2
 Copyright (c) 2016 Nicole Sullivan and Nicholas C. Zakas. All rights reserved.
 
 Permission is hereby granted, free of charge, to any person obtaining a copy

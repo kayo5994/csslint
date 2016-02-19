@@ -1,5 +1,5 @@
 /*!
-CSSLint v0.10.1
+CSSLint v0.10.2
 Copyright (c) 2016 Nicole Sullivan and Nicholas C. Zakas. All rights reserved.
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -41,7 +41,7 @@ var CSSLint = (function() {
         embeddedRuleset = /\/\*\s*csslint([^\*]*)\*\//,
         api             = new parserlib.util.EventTarget();
 
-    api.version = "0.10.1";
+    api.version = "0.10.2";
 
     //-------------------------------------------------------------------------
     // Rule Management
@@ -1910,7 +1910,8 @@ CSSLint.addRule({
   init: function(parser, reporter) {
     "use strict";
     var rule = this,
-        rootClassList = [];
+        rootClassList = [], // 样式表中存在的 Root Class 的集合
+        childClassList = []; // 样式表中需要的 Root Class 的集合
 
     parser.addListener("startrule", function(event){
       var selectors = event.selectors,
@@ -1932,8 +1933,11 @@ CSSLint.addRule({
 
                 composition = modifier.toString().split("_");
 
-                if (composition.length === 2) {
-                  // 如果为 root class-name，则存储到数组中，以便后面作对比
+                if (composition.length >= 3) {
+                  // 如果为 children class-name，则存储到 Child Class 数组中，以便后面作对比
+                  childClassList.push(modifier);
+                } else if (composition.length === 2) {
+                  // 如果为 root class-name，则存储到 Root Class 数组中，以便后面作对比
                   rootClassList.push(modifier);
                 }
               }
@@ -1947,41 +1951,17 @@ CSSLint.addRule({
 
     });
 
-    parser.addListener("endrule", function(event){
-      var selectors = event.selectors,
-      selector,
-      part,
-      modifier,
-      composition,
-      rootClass,
-      i, j, k;
+    parser.addListener("endstylesheet", function(){
+      var i, modifier, composition, rootClass;
 
-      for (i=0; i < selectors.length; i++){
-        selector = selectors[i];
+      for (i=0; i < childClassList.length; i++){
+        modifier = childClassList[i];
+        composition = modifier.toString().split("_");
+        rootClass = composition[0] + "_" + composition[1];
 
-        for (j=0; j < selector.parts.length; j++){
-          part = selector.parts[j];
-          if (part.type === parser.SELECTOR_PART_TYPE){
-            for (k=0; k < part.modifiers.length; k++){
-              modifier = part.modifiers[k];
-              if (modifier.type === "class"){
-
-                composition = modifier.toString().split("_");
-
-                if (composition.length >= 3) {
-                  // 如果为 children class-name，则在 root class-name 的数组中检索该元素对应的 root class-name
-                  rootClass = composition[0] + "_" + composition[1];
-                  if (!rule.isElementInArray(rootClassList, rootClass)) {
-                    reporter.report("Class-name " + modifier + " shouldn't exist unless you've already set a class-name " + rootClass + ".", modifier.line, modifier.col, rule);
-                  }
-                }
-              }
-            }
-
-          }
-
+        if (!rule.isElementInArray(rootClassList, rootClass)) {
+          reporter.report("Class-name " + modifier + " shouldn't exist unless you've already set a class-name " + rootClass + ".", modifier.line, modifier.col, rule);
         }
-
       }
 
     });
